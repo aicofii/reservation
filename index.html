@@ -35,6 +35,7 @@
       background-clip: text;
       color: transparent;
       margin-bottom: 20px;
+      margin-top: 50px; /* 增加上边距以避免与语言切换按钮重叠 */
     }
     label {
       display: block;
@@ -79,7 +80,7 @@
     .language-select {
       position: absolute;
       top: 10px;
-      right: 10px;
+      left: 10px; /* 移动到左侧上方 */
       width: 100px;
       padding: 8px;
       border-radius: 10px;
@@ -238,6 +239,7 @@
       h1 {
         font-size: 1.8rem;
         margin-bottom: 15px;
+        margin-top: 40px; /* 手机端调整上边距 */
       }
       label {
         font-size: 0.8rem;
@@ -270,7 +272,7 @@
         padding-left: 32px;
         border-radius: 8px;
         top: 8px;
-        right: 8px;
+        left: 8px; /* 手机端保持左侧定位 */
       }
       .language-select option {
         background-size: 20px 20px;
@@ -319,6 +321,7 @@
     @media (max-width: 400px) {
       h1 {
         font-size: 1.5rem;
+        margin-top: 35px; /* 超小屏幕调整上边距 */
       }
       select, input {
         padding: 6px;
@@ -333,6 +336,8 @@
         font-size: 0.75rem;
         padding-left: 28px;
         background-size: 18px 18px, auto;
+        top: 8px;
+        left: 8px; /* 超小屏幕保持左侧定位 */
       }
       .modal-content {
         padding: 15px;
