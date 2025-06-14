@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barcelona Hair Studio 预约</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #2c3e50);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+    }
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(to right, #8b5cf6, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      text-align: left;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #2d3748;
+      color: #fff;
+      font-size: 1rem;
+      transition: transform 0.3s;
+    }
+    select:focus, input:focus { outline: none; transform: scale(1.02); }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #8b5cf6, #ec4899);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    button:hover { transform: scale(1.05); }
+    .confirmation, .manage { background: #1a202c; padding: 20px; border-radius: 10px; }
+    .confirmation p, .manage p { margin: 10px 0; }
+    .link-button {
+      background: none;
+      color: #93c5fd;
+      padding: 5px;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+    .language-select {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 100px;
+      padding: 8px;
+      border-radius: 10px;
+      background: linear-gradient(to right, #8b5cf6, #ec4899);
+      color: #fff;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-size: 24px 24px, auto;
+      background-position: 8px center, right 8px center;
+      background-repeat: no-repeat, no-repeat;
+      padding-left: 40px;
+    }
+    .language-select:hover { transform: scale(1.05); }
+    .language-select option {
+      background-color: #2d3748;
+      color: #fff;
+      padding: 10px;
+      background-size: 24px 24px;
+      background-repeat: no-repeat;
+      background-position: 8px center;
+      padding-left: 40px;
+    }
+    .language-select option:nth-child(1) {
+      background-image: url('https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/cn.svg');
+    }
+    .language-select option:nth-child(2) {
+      background-image: url('https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/gb.svg');
+    }
+    .language-select option:nth-child(3) {
+      background-image: url('https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/es.svg');
+    }
+    .language-select[value="zh"] {
+      background-image: url('https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/cn.svg'), url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"%3E%3Cpath d="M7 10l5 5 5-5H7z"/%3E%3C/svg%3E');
+    }
+    .language-select[value="en"] {
+      background-image: url('https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/gb.svg'), url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"%3E%3Cpath d="M7 10l5 5 5-5H7z"/%3E%3C/svg%3E');
+    }
+    .language-select[value="es"] {
+      background-image: url('https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/4x3/es.svg'), url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"%3E%3Cpath d="M7 10l5 5 5-5H7z"/%3E%3C/svg%3E');
+    }
+    .availability-btn {
+      width: auto;
+      padding: 8px 12px;
+      margin-left: 10px;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #2d3748;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 450px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .modal-content h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #8b5cf6, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .modal-content ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .modal-content li {
+      padding: 10px;
+      margin: 5px 0;
+      background: #1a202c;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .modal-content li:hover {
+      background: #4b5563;
+    }
+    .modal-content li.selected {
+      background: linear-gradient(to right, #8b5cf6, #ec4899);
+      color: #fff;
+    }
+    .modal-content .no-availability {
+      margin: 10px 0;
+      color: #f87171;
+    }
+    .modal-content .confirm-btn {
+      padding: 10px;
+      background: linear-gradient(to right, #10b981, #34d399);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .modal-content .confirm-btn:hover {
+      transform: scale(1.05);
+    }
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      background: #4b5563;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .close-btn:hover {
+      background: #ef4444;
+    }
+    .close-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
+    }
+    /* 增强手机端响应式设计 */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+        align-items: flex-start;
+      }
+      .container {
+        padding: 15px;
+        max-width: 100%;
+        margin: 0 auto;
+        border-radius: 15px;
+      }
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      }
+      label {
+        font-size: 0.8rem;
+      }
+      select, input {
+        padding: 8px;
+        margin-bottom: 12px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+      }
+      button {
+        padding: 10px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+      }
+      .availability-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        margin-left: 5px;
+      }
+      .link-button {
+        font-size: 0.8rem;
+        margin-top: 8px;
+      }
+      .language-select {
+        width: 80px;
+        font-size: 0.8rem;
+        padding: 6px;
+        background-size: 20px 20px, auto;
+        padding-left: 32px;
+        border-radius: 8px;
+        top: 8px;
+        right: 8px;
+      }
+      .language-select option {
+        background-size: 20px 20px;
+        padding-left: 32px;
+        font-size: 0.8rem;
+      }
+      .confirmation, .manage {
+        padding: 15px;
+        border-radius: 8px;
+      }
+      .confirmation p, .manage p {
+        font-size: 0.9rem;
+      }
+      .modal-content {
+        padding: 20px;
+        width: 95%;
+        max-height: 85vh;
+        border-radius: 12px;
+      }
+      .modal-content h2 {
+        font-size: 1.5rem;
+      }
+      .modal-content li {
+        padding: 8px;
+        margin: 4px 0;
+        font-size: 0.9rem;
+        border-radius: 6px;
+      }
+      .modal-content .confirm-btn {
+        padding: 8px;
+        font-size: 0.9rem;
+        border-radius: 6px;
+      }
+      .close-btn {
+        width: 25px;
+        height: 25px;
+        top: 10px;
+        right: 10px;
+      }
+      .close-btn svg {
+        width: 15px;
+        height: 15px;
+      }
+    }
+    /* 超小屏幕优化（例如宽度小于400px） */
+    @media (max-width: 400px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      select, input {
+        padding: 6px;
+        font-size: 0.85rem;
+      }
+      button {
+        padding: 8px;
+        font-size: 0.85rem;
+      }
+      .language-select {
+        width: 70px;
+        font-size: 0.75rem;
+        padding-left: 28px;
+        background-size: 18px 18px, auto;
+      }
+      .modal-content {
+        padding: 15px;
+      }
+      .modal-content h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <select class="language-select" id="language-select">
+      <option value="zh">中文</option>
+      <option value="en">English</option>
+      <option value="es">Español</option>
+    </select>
+  </div>
+  <script>
+    const translations = {
+      zh: {
+        title: 'Barcelona Hair Studio',
+        serviceLabel: '服务项目',
+        servicePlaceholder: '选择服务',
+        stylistLabel: '理发师',
+        stylistPlaceholder: '任意理发师',
+        dateLabel: '日期',
+        timeLabel: '时间',
+        nameLabel: '姓名',
+        phoneLabel: '电话',
+        submitButton: '提交预约',
+        manageLink: '管理预约',
+        confirmationTitle: '预约成功！',
+        confirmationService: '服务',
+        confirmationStylist: '理发师',
+        confirmationDate: '日期',
+        confirmationTime: '时间',
+        confirmationName: '姓名',
+        confirmationPhone: '电话',
+        confirmationEmail: '确认邮件已发送至您的邮箱（模拟）！',
+        returnButton: '返回',
+        manageTitle: '管理预约',
+        managePhonePlaceholder: '输入电话号码查询',
+        manageQueryButton: '查询',
+        noBookings: '无预约记录',
+        cancelButton: '取消',
+        errorFillFields: '请填写所有必填字段！',
+        errorSubmitFailed: '提交失败，请重试！',
+        errorCancelFailed: '取消预约失败，请重试！',
+        availabilityButton: '查看可用时间',
+        availabilityTitle: '当天可用时间',
+        noAvailability: '该日期暂无可用时间',
+        stylistAvailability: '理发师：',
+        availableTime: '可用时间：',
+        confirmButton: '确认选择'
+      },
+      en: {
+        title: 'Barcelona Hair Studio',
+        serviceLabel: 'Service',
+        servicePlaceholder: 'Select a service',
+        stylistLabel: 'Stylist',
+        stylistPlaceholder: 'Any stylist',
+        dateLabel: 'Date',
+        timeLabel: 'Time',
+        nameLabel: 'Name',
+        phoneLabel: 'Phone',
+        submitButton: 'Book Appointment',
+        manageLink: 'Manage Appointments',
+        confirmationTitle: 'Booking Confirmed!',
+        confirmationService: 'Service',
+        confirmationStylist: 'Stylist',
+        confirmationDate: 'Date',
+        confirmationTime: 'Time',
+        confirmationName: 'Name',
+        confirmationPhone: 'Phone',
+        confirmationEmail: 'Confirmation email sent to your inbox (simulated)!',
+        returnButton: 'Back',
+        manageTitle: 'Manage Appointments',
+        managePhonePlaceholder: 'Enter phone number to search',
+        manageQueryButton: 'Search',
+        noBookings: 'No bookings found',
+        cancelButton: 'Cancel',
+        errorFillFields: 'Please fill all required fields!',
+        errorSubmitFailed: 'Submission failed, please try again!',
+        errorCancelFailed: 'Failed to cancel booking, please try again!',
+        availabilityButton: 'Check Availability',
+        availabilityTitle: 'Daily Available Times',
+        noAvailability: 'No available times for this date',
+        stylistAvailability: 'Stylist:',
+        availableTime: 'Available Time:',
+        confirmButton: 'Confirm Selection'
+      },
+      es: {
+        title: 'Barcelona Hair Studio',
+        serviceLabel: 'Servicio',
+        servicePlaceholder: 'Selecciona un servicio',
+        stylistLabel: 'Estilista',
+        stylistPlaceholder: 'Cualquier estilista',
+        dateLabel: 'Fecha',
+        timeLabel: 'Hora',
+        nameLabel: 'Nombre',
+        phoneLabel: 'Teléfono',
+        submitButton: 'Reservar Cita',
+        manageLink: 'Gestionar Citas',
+        confirmationTitle: '¡Reserva Confirmada!',
+        confirmationService: 'Servicio',
+        confirmationStylist: 'Estilista',
+        confirmationDate: 'Fecha',
+        confirmationTime: 'Hora',
+        confirmationName: 'Nombre',
+        confirmationPhone: 'Teléfono',
+        confirmationEmail: 'Correo de confirmación enviado a tu bandeja (simulado)!',
+        returnButton: 'Volver',
+        manageTitle: 'Gestionar Citas',
+        managePhonePlaceholder: 'Ingresa número de teléfono para buscar',
+        manageQueryButton: 'Buscar',
+        noBookings: 'No se encontraron reservas',
+        cancelButton: 'Cancelar',
+        errorFillFields: '¡Por favor completa todos los campos obligatorios!',
+        errorSubmitFailed: '¡Error al enviar, intenta de nuevo!',
+        errorCancelFailed: '¡Error al cancelar la reserva, intenta de nuevo!',
+        availabilityButton: 'Ver disponibilidad',
+        availabilityTitle: 'Horarios Disponibles del Día',
+        noAvailability: 'No hay horarios disponibles para esta fecha',
+        stylistAvailability: 'Estilista:',
+        availableTime: 'Hora Disponible:',
+        confirmButton: 'Confirmar Selección'
+      }
+    };
+
+    const services = [
+      { id: 1, name: '剪发', duration: 30, name_en: 'Haircut', name_es: 'Corte de Pelo' },
+      { id: 2, name: '染发', duration: 60, name_en: 'Hair Coloring', name_es: 'Tinte de Pelo' },
+      { id: 3, name: '造型', duration: 45, name_en: 'Styling', name_es: 'Peinado' }
+    ];
+    const stylists = [
+      { id: 1, name: 'Alex' },
+      { id: 2, name: 'Maria' }
+    ];
+
+    let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+
+    function saveBookings() {
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+    }
+
+    window.showAvailability = function() {
+      const selectedDate = document.getElementById('date').value;
+      const selectedStylist = document.getElementById('stylist').value;
+      const t = translations[document.getElementById('language-select').value];
+      const modal = document.getElementById('availability-modal');
+      const modalContent = document.getElementById('availability-content');
+
+      if (!modal || !modalContent) {
+        console.error('Modal or modal content not found');
+        alert('系统错误：模态框未正确加载！');
+        return;
+      }
+
+      if (!selectedDate) {
+        alert(t.errorFillFields);
+        return;
+      }
+
+      // Generate all possible time slots from 09:00 to 20:00 with 30-minute intervals
+      const timeSlots = [];
+      let startTime = 9 * 60; // 09:00 in minutes
+      const endTime = 20 * 60; // 20:00 in minutes
+      while (startTime <= endTime) {
+        const hours = Math.floor(startTime / 60);
+        const minutes = startTime % 60;
+        timeSlots.push(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
+        startTime += 30; // 30-minute intervals
+      }
+
+      // Filter bookings for the selected date
+      const dailyBookings = bookings.filter(b => b.date === selectedDate);
+      let content = '';
+      let selectedTime = null;
+
+      // Check availability for each stylist
+      const targetStylists = selectedStylist ? stylists.filter(s => s.id == selectedStylist) : stylists;
+      targetStylists.forEach(stylist => {
+        const stylistBookings = dailyBookings.filter(b => !b.stylist || b.stylist == stylist.id);
+        const bookedTimes = stylistBookings.map(b => b.time);
+
+        // Find available time slots
+        const availableTimes = timeSlots.filter(time => !bookedTimes.includes(time));
+
+        if (availableTimes.length > 0) {
+          content += `<p><strong>${t.stylistAvailability} ${stylist.name}</strong></p>`;
+          content += `<ul>`;
+          availableTimes.forEach(time => {
+            content += `<li onclick="selectTime('${time}')">${time}</li>`;
+          });
+          content += `</ul>`;
+        }
+      });
+
+      // If no available times, show message
+      if (!content) {
+        content = `<p class="no-availability">${t.noAvailability}</p>`;
+      }
+
+      modalContent.innerHTML = `
+        <div class="close-btn" onclick="closeModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M18 6L6 18M6 6l12 12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h2>${t.availabilityTitle}</h2>
+        ${content}
+        <button class="confirm-btn" onclick="confirmTime()">${t.confirmButton}</button>
+      `;
+      modal.style.display = 'flex';
+
+      // Handle time selection
+      window.selectTime = function(time) {
+        selectedTime = time;
+        const timeItems = modalContent.querySelectorAll('li');
+        timeItems.forEach(item => {
+          item.classList.remove('selected');
+          if (item.textContent === time) {
+            item.classList.add('selected');
+          }
+        });
+      };
+
+      // Handle confirm button
+      window.confirmTime = function() {
+        if (!selectedTime) {
+          alert(t.errorFillFields);
+          return;
+        }
+        const timeInput = document.getElementById('time');
+        if (timeInput) {
+          timeInput.value = selectedTime;
+        }
+        closeModal();
+      };
+    };
+
+    function App() {
+      const app = document.getElementById('app');
+      let state = {
+        view: 'booking',
+        selectedService: '',
+        selectedStylist: '',
+        selectedDate: '',
+        selectedTime: '',
+        name: '',
+        phone: '',
+        confirmation: null,
+        managePhone: '',
+        language: localStorage.getItem('language') || 'zh'
+      };
+
+      const languageSelect = document.getElementById('language-select');
+      languageSelect.value = state.language;
+      languageSelect.addEventListener('change', (e) => {
+        state.language = e.target.value;
+        localStorage.setItem('language', state.language);
+        render();
+      });
+
+      function getServiceName(service, lang) {
+        if (lang === 'en') return service.name_en;
+        if (lang === 'es') return service.name_es;
+        return service.name;
+      }
+
+      window.closeModal = () => {
+        const modal = document.getElementById('availability-modal');
+        if (modal) {
+          modal.style.display = 'none';
+        }
+      };
+
+      function render() {
+        const t = translations[state.language];
+        if (state.view === 'booking') {
+          app.innerHTML = `
+            <select class="language-select" id="language-select">
+              <option value="zh">中文</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+            </select>
+            <h1>${t.title}</h1>
+            <form id="booking-form">
+              <label>${t.serviceLabel}</label>
+              <select id="service" required>
+                <option value="">${t.servicePlaceholder}</option>
+                ${services.map(s => `<option value="${s.id}">${getServiceName(s, state.language)} (${s.duration}分钟)</option>`).join('')}
+              </select>
+              <label>${t.stylistLabel}</label>
+              <select id="stylist">
+                <option value="">${t.stylistPlaceholder}</option>
+                ${stylists.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+              </select>
+              <label>${t.dateLabel}</label>
+              <input type="date" id="date" min="${new Date().toISOString().split('T')[0]}" required>
+              <label>${t.timeLabel}</label>
+              <input type="time" id="time" min="09:00" max="20:00" step="1800" required>
+              <button type="button" class="availability-btn" onclick="showAvailability()">${t.availabilityButton}</button>
+              <label>${t.nameLabel}</label>
+              <input type="text" id="name" required>
+              <label>${t.phoneLabel}</label>
+              <input type="tel" id="phone" required>
+              <button type="submit">${t.submitButton}</button>
+            </form>
+            <button class="link-button" onclick="switchView('manage')">${t.manageLink}</button>
+            <div class="modal" id="availability-modal">
+              <div class="modal-content" id="availability-content"></div>
+            </div>
+          `;
+          document.getElementById('booking-form').addEventListener('submit', handleSubmit);
+          document.getElementById('language-select').value = state.language;
+          document.getElementById('language-select').addEventListener('change', (e) => {
+            state.language = e.target.value;
+            localStorage.setItem('language', state.language);
+            render();
+          });
+        } else if (state.view === 'confirmation' && state.confirmation) {
+          const service = services.find(s => s.id == state.confirmation.service);
+          const stylist = stylists.find(s => s.id == state.confirmation.stylist) || { name: t.stylistPlaceholder };
+          app.innerHTML = `
+            <select class="language-select" id="language-select">
+              <option value="zh">中文</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+            </select>
+            <h1>${t.confirmationTitle}</h1>
+            <div class="confirmation">
+              <p>${t.confirmationService}: ${getServiceName(service, state.language)}</p>
+              <p>${t.confirmationStylist}: ${stylist.name}</p>
+              <p>${t.confirmationDate}: ${state.confirmation.date}</p>
+              <p>${t.confirmationTime}: ${state.confirmation.time}</p>
+              <p>${t.confirmationName}: ${state.confirmation.name}</p>
+              <p>${t.confirmationPhone}: ${state.confirmation.phone}</p>
+              <p>${t.confirmationEmail}</p>
+            </div>
+            <button onclick="switchView('booking')">${t.returnButton}</button>
+          `;
+          document.getElementById('language-select').value = state.language;
+          document.getElementById('language-select').addEventListener('change', (e) => {
+            state.language = e.target.value;
+            localStorage.setItem('language', state.language);
+            render();
+          });
+        } else if (state.view === 'manage') {
+          const userBookings = bookings.filter(b => b.phone === state.managePhone);
+          app.innerHTML = `
+            <select class="language-select" id="language-select">
+              <option value="zh">中文</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+            </select>
+            <h1>${t.manageTitle}</h1>
+            <div class="manage">
+              <input type="tel" id="manage-phone" placeholder="${t.managePhonePlaceholder}" value="${state.managePhone}">
+              <button onclick="queryBookings()">${t.manageQueryButton}</button>
+              <div id="bookings-list">
+                ${userBookings.length ? userBookings.map((b, i) => `
+                  <div style="background: #2d3748; padding: 10px; border-radius: 10px; margin: 10px 0;">
+                    <p>${t.confirmationService}: ${getServiceName(services.find(s => s.id == b.service), state.language)}</p>
+                    <p>${t.confirmationDate}: ${b.date}</p>
+                    <p>${t.confirmationTime}: ${b.time}</p>
+                    <button onclick="cancelBooking(${b.id})" style="background: #ef4444;">${t.cancelButton}</button>
+                  </div>
+                `).join('') : `<p>${t.noBookings}</p>`}
+              </div>
+            </div>
+            <button onclick="switchView('booking')">${t.returnButton}</button>
+          `;
+          const phoneInput = document.getElementById('manage-phone');
+          phoneInput.addEventListener('input', (e) => {
+            state.managePhone = e.target.value;
+            // Do not call render() here to avoid losing focus
+          });
+          phoneInput.addEventListener('change', () => {
+            render(); // Render only when input is complete (e.g., on blur)
+          });
+          phoneInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              render(); // Render on Enter key
+            }
+          });
+          document.getElementById('language-select').value = state.language;
+          document.getElementById('language-select').addEventListener('change', (e) => {
+            state.language = e.target.value;
+            localStorage.setItem('language', state.language);
+            render();
+          });
+        }
+      }
+
+      function handleSubmit(e) {
+        e.preventDefault();
+        try {
+          state.selectedService = document.getElementById('service').value;
+          state.selectedStylist = document.getElementById('stylist').value;
+          state.selectedDate = document.getElementById('date').value;
+          state.selectedTime = document.getElementById('time').value;
+          state.name = document.getElementById('name').value;
+          state.phone = document.getElementById('phone').value;
+
+          if (!state.selectedService || !state.selectedDate || !state.selectedTime || !state.name || !state.phone) {
+            alert(translations[state.language].errorFillFields);
+            return;
+          }
+
+          const booking = {
+            id: bookings.length + 1,
+            service: state.selectedService,
+            stylist: state.selectedStylist || null,
+            date: state.selectedDate,
+            time: state.selectedTime,
+            name: state.name,
+            phone: state.phone
+          };
+          bookings.push(booking);
+          saveBookings();
+          state.confirmation = booking;
+          state.view = 'confirmation';
+          render();
+        } catch (err) {
+          alert(translations[state.language].errorSubmitFailed);
+        }
+      }
+
+      window.switchView = (view) => {
+        state.view = view;
+        state.managePhone = view === 'manage' ? state.managePhone : '';
+        render();
+      };
+
+      window.queryBookings = () => {
+        render();
+      };
+
+      window.cancelBooking = (bookingId) => {
+        try {
+          bookings = bookings.filter(b => b.id !== bookingId);
+          saveBookings();
+          render();
+        } catch (err) {
+          alert(translations[state.language].errorCancelFailed);
+        }
+      };
+
+      render();
+    }
+
+    App();
+  </script>
+</body>
+</html>
